@@ -51,7 +51,7 @@ services:
       timeout: 5s
       retries: 10
 
-  # ── Application: LangGraph pipeline + Streamlit UI ────────────────────────
+  # ── Application: Django + LangGraph ───────────────────────────────────────
   app:
     build:
       context: .
@@ -70,11 +70,13 @@ services:
       LLM_MODEL: ${LLM_MODEL:-mistral}
       EMBED_MODEL: ${EMBED_MODEL:-nomic-embed-text}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-dev-secret-change-me}
+      DJANGO_SETTINGS_MODULE: timeline_project.settings
     volumes:
       - ./data:/app/data
       - ./logs:/app/logs
     ports:
-      - "8501:8501"
+      - "8000:8000"
 
 volumes:
   ollama_data:

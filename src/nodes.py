@@ -5,9 +5,9 @@ from langchain_ollama import ChatOllama
 from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_community.document_loaders import PyPDFLoader
 
-from .state import PatientState, LifeEvent
-from .rag import get_retriever, index_patient_document
-from .audit import AuditEntry, write_audit
+from state import PatientState, LifeEvent
+from rag import get_retriever, index_patient_document
+from audit import AuditEntry, write_audit
 
 
 def _get_llm():

@@ -3,8 +3,8 @@ from langgraph.graph import StateGraph, START, END
 from langgraph.checkpoint.postgres import PostgresSaver
 from langgraph.types import Send, interrupt
 
-from .state import PatientState
-from .nodes import (
+from state import PatientState
+from nodes import (
     route_documents,
     process_document,
     merge_events,

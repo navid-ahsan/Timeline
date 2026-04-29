@@ -3,7 +3,7 @@ from langgraph.graph import StateGraph, START, END, MessagesState
 from langchain_ollama import ChatOllama
 from langchain_core.messages import SystemMessage
 
-from .rag import get_patient_retriever
+from rag import get_patient_retriever
 
 
 def build_chat_graph(checkpointer):

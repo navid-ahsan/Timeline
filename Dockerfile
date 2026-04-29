@@ -12,7 +12,17 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY src/ ./src/
 COPY scripts/ ./scripts/
 COPY sql/ ./sql/
+COPY front/ ./front/
+COPY manage.py ./
+COPY timeline_project/ ./timeline_project/
+COPY apps/ ./apps/
+COPY entrypoint.sh ./
 
-EXPOSE 8501
+RUN chmod +x entrypoint.sh
 
-CMD ["streamlit", "run", "src/ui.py", "--server.port=8501", "--server.address=0.0.0.0"]
+ENV PYTHONPATH=/app/src
+ENV DJANGO_SETTINGS_MODULE=timeline_project.settings
+
+EXPOSE 8000
+
+ENTRYPOINT ["./entrypoint.sh"]

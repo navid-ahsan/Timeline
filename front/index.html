@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lastensuojelu — Elämäntapahtumaaikajana</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-brand">🏥 Lastensuojelu Aikajana</div>
+    <div class="nav-center">
+      <input id="worker-id" type="text" placeholder="Työntekijän ID" maxlength="50">
+    </div>
+    <div class="nav-right">
+      <span id="kb-status" class="kb-badge" title="Lakitietokanta">⚖️ Lakikanta</span>
+      <label class="dark-toggle" title="Tumma tila">
+        🌙
+        <input type="checkbox" id="dark-toggle-cb" onchange="toggleDark()">
+      </label>
+    </div>
+  </nav>
+
+  <!-- App layout -->
+  <div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <button class="btn-primary full-width" onclick="toggleNewPatient()">+ Uusi potilas</button>
+
+      <!-- New patient form -->
+      <div id="new-patient-form" class="new-patient-form hidden">
+        <input id="new-patient-id" type="text" placeholder="Potilaan ID (esim. 12345)" maxlength="50">
+
+        <!-- Drag-and-drop zone -->
+        <div id="drop-zone" class="drop-zone">
+          <div class="drop-icon">📁</div>
+          <div class="drop-text">Raahaa PDF-tiedostot tähän</div>
+          <div class="drop-sub">tai</div>
+          <label class="btn-secondary browse-label">
+            Selaa tiedostoja
+            <input type="file" id="file-input" multiple accept=".pdf" onchange="onFileSelect(this.files)">
+          </label>
+        </div>
+
+        <div id="file-list" class="file-list"></div>
+
+        <button class="btn-primary full-width" onclick="uploadAndAnalyze()">
+          🔍 Analysoi asiakirjat
+        </button>
+      </div>
+
+      <!-- Patient list -->
+      <div class="sidebar-section-title">Potilaat</div>
+      <div id="patient-list" class="patient-list">
+        <div class="patient-list-empty">Ladataan...</div>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+
+      <!-- Loading overlay -->
+      <div id="loading" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <div id="loading-text" class="loading-text">Analysoidaan asiakirjoja...</div>
+      </div>
+
+      <!-- Patient header -->
+      <div id="patient-header" class="patient-header hidden">
+        <div class="patient-title">
+          <span>👤</span>
+          <h2 id="patient-title-id">—</h2>
+        </div>
+        <div class="patient-meta-row">
+          <span id="meta-docs" class="meta-chip">📄 0 asiakirjaa</span>
+          <span id="meta-events" class="meta-chip">📋 0 tapahtumaa</span>
+          <label class="btn-secondary small browse-label">
+            + Lisää asiakirja
+            <input type="file" id="add-doc-input" multiple accept=".pdf" onchange="addDocuments(this.files)">
+          </label>
+        </div>
+      </div>
+
+      <!-- Approve bar -->
+      <div id="approve-bar" class="approve-bar hidden">
+        <span class="approve-msg">⚠️ Aikajana odottaa hyväksyntääsi.</span>
+        <button class="btn-success" onclick="approveTL()">✅ Hyväksy</button>
+        <button class="btn-outline" onclick="reanalyze()">🔄 Uudelleen</button>
+      </div>
+
+      <!-- Status message -->
+      <div id="status-msg" class="status-msg hidden"></div>
+
+      <!-- Empty state -->
+      <div id="empty-state" class="empty-state">
+        <div class="empty-icon">📊</div>
+        <div class="empty-text">Valitse potilas vasemmalta tai lisää uusi.</div>
+      </div>
+
+      <!-- Timeline section -->
+      <div id="timeline-section" class="timeline-section hidden">
+        <div class="section-label">Elämäntapahtumaaikajana</div>
+
+        <div class="severity-legend">
+          <span class="leg-item"><span class="leg-dot" style="background:#28a745"></span>1 Ehkäisevä</span>
+          <span class="leg-item"><span class="leg-dot" style="background:#ffc107"></span>2 Varhainen</span>
+          <span class="leg-item"><span class="leg-dot" style="background:#fd7e14"></span>3 Merkittävä</span>
+          <span class="leg-item"><span class="leg-dot" style="background:#dc3545"></span>4 Kriittinen</span>
+          <span class="leg-item"><span class="leg-dot" style="background:#6f42c1"></span>5 Hengenvaara</span>
+        </div>
+
+        <div class="timeline-scroll-wrapper">
+          <div id="timeline-track" class="timeline-track">
+            <div class="timeline-line"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom panels -->
+      <div id="bottom-panels" class="bottom-panels hidden">
+
+        <!-- Chat -->
+        <div class="chat-panel">
+          <div class="panel-header">💬 Kysy asiakirjoista</div>
+          <div id="chat-messages" class="chat-messages"></div>
+          <div class="chat-input-row">
+            <textarea id="chat-input"
+              placeholder="Esim. Milloin viimeisin ilmoitus tehtiin?"
+              rows="2"
+              onkeydown="chatKeydown(event)"></textarea>
+            <button class="btn-primary" onclick="sendChat()">Lähetä</button>
+          </div>
+        </div>
+
+        <!-- Event detail + Laws -->
+        <div class="detail-panel">
+          <div class="panel-header">📋 Tapahtuma &amp; Lait</div>
+          <div id="event-detail" class="event-detail">
+            <p class="hint-text">Klikkaa tapahtumaa aikajanalta.</p>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
